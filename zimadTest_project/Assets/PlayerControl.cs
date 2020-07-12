@@ -32,6 +32,7 @@ public class PlayerControl : Singleton<PlayerControl>
     public static bool gravityChangePending = false;
 
 
+    const int CHARGED_GEM_COMBO_COUNT=4;
     private Coroutine CheckMatchCoroutineLink;
     // Start is called before the first frame update
     void Start()
@@ -456,8 +457,7 @@ public class PlayerControl : Singleton<PlayerControl>
         //Debug.Log($"Clearing {chains.Count} chains");
         foreach (var chain in chains)
         {
-            
-            if (chain.chainedGems.Count >= 4)
+            if (chain.chainedGems.Count >= CHARGED_GEM_COMBO_COUNT)
             {
                 var rndGemInChain = Random.Range(0, chain.chainedGems.Count);
                 chain.chainedGems[rndGemInChain].gemView.InitializeWithGemInfo(
