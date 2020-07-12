@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(RectTransform))]
 public class GemView : MonoBehaviour
 {
+    [SerializeField]
     private Image _image;
-    
+
+    public Gem gem = new Gem();
+
+    private RectTransform _rectTransform;
+
+    private void Awake()
+    {
+        _rectTransform = GetComponent<RectTransform>();
+    }
 
     public void InitializeWithGemInfo(GemInfo gemInfo)
     {
@@ -15,6 +25,6 @@ public class GemView : MonoBehaviour
 
     public void MoveTo(Vector2 coordinates)
     {
-        transform.localPosition = coordinates;
+        _rectTransform.position = coordinates;
     }
 }
