@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGenerator : MonoBehaviour
+public class LevelGenerator : Singleton<LevelGenerator>
 {
     [SerializeField]
     private Vector2Int levelSize;
@@ -22,8 +22,14 @@ public class LevelGenerator : MonoBehaviour
 
 
 
-    public List<Slot> slots = new List<Slot>();
+    public static Dictionary<Vector2Int,Slot> slots = new Dictionary<Vector2Int, Slot>();
     public List<GemView> gems = new List<GemView>();
+
+    public Vector2Int LevelSize
+    {
+        get => levelSize;
+        set => levelSize = value;
+    }
 
 
     // Start is called before the first frame update
@@ -40,11 +46,25 @@ public class LevelGenerator : MonoBehaviour
     public IEnumerator GenerationCoroutine()
     {
 
-        PopulateLevelWithSlots(levelSize);
+        PopulatePool(LevelSize);
+        PopulateLevelWithSlots(LevelSize);
+        
+        
         yield return new WaitForEndOfFrame();
         PopulateEmptySlotsWithGems();
     }
 
+    private void PopulatePool(Vector2Int levelSize)
+    {
+        for (int i = 0; i < levelSize.x*levelSize.y; i++)
+        {
+            var newGem = Instantiate(gemPrefab, gemsParent);
+            GemView gemView = newGem.GetComponent<GemView>();
+        
+            GemsPool.ReturnToPool(gemView);            
+        }
+
+    }
 
 
     private void PopulateLevelWithSlots(Vector2Int levelSize)
@@ -57,22 +77,29 @@ public class LevelGenerator : MonoBehaviour
                 var newSlotGO = Instantiate(slotPrefab, gridForSlots);
                 var newSlot = newSlotGO.GetComponent<Slot>();
                 newSlot.coordinates = new Vector2Int(j, i);
-                slots.Add(newSlot);
+                newSlot.gameObject.name = $"Slot {j}x{i}";
+                slots.Add(new Vector2Int(j,i),newSlot);
             }
         }
     }
     private void PopulateEmptySlotsWithGems()
     {
-        foreach (var slot in slots)
+        
+        
+        foreach (var slot in slots.Values)
         {
-            var newGem = Instantiate(gemPrefab, gemsParent);
-            GemView gemView = newGem.GetComponent<GemView>();
+            var gemView = GemsPool.GetFromPool();
+            
             gemView.InitializeWithGemInfo(
                 GemsLibrary.CommonGems[UnityEngine.Random.Range(0, GemsLibrary.CommonGems.Count)]
                 );
-            Debug.Log(slot.gameObject.GetComponent<RectTransform>().position);
-            gemView.MoveTo(slot.gameObject.GetComponent<RectTransform>().position);
+            //Debug.Log(slot.gameObject.GetComponent<RectTransform>().position);
+            //gemView.MoveTo(slot.gameObject.GetComponent<RectTransform>().position);
+            
             slot.gemInSlot = gemView.gem;
+            gemView.gem.CurrentSlot = slot;
+            gemView.MoveTo(slot.rectTransform.position);
+            gemView.gameObject.SetActive(true);
         }
     }
 

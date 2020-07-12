@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(RectTransform))]
 public class Slot : MonoBehaviour
 {
 
@@ -9,10 +10,11 @@ public class Slot : MonoBehaviour
 
     public Gem gemInSlot;
 
+    public RectTransform rectTransform;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        rectTransform = GetComponent<RectTransform>();
     }
 
     // Update is called once per frame

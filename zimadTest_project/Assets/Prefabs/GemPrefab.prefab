@@ -60,6 +60,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -82,7 +83,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5626340859267524121}
-  - component: {fileID: 1136683487220335740}
+  - component: {fileID: 4913457222978880049}
   - component: {fileID: 2917871665948320713}
   m_Layer: 5
   m_Name: GemPrefab
@@ -111,7 +112,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1136683487220335740
+--- !u!114 &4913457222978880049
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,7 +121,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8559804467112541371}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50841e2e77fca9c4c885dfa1ce85c3d9, type: 3}
+  m_Script: {fileID: 11500000, guid: b1da62193a0461848aa5d795315d1445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _image: {fileID: 855382390843039834}
