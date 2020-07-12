@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelGenerator : Singleton<LevelGenerator>
 {
@@ -22,8 +23,7 @@ public class LevelGenerator : Singleton<LevelGenerator>
 
 
 
-    public static Dictionary<Vector2Int,Slot> slots = new Dictionary<Vector2Int, Slot>();
-    public List<GemView> gems = new List<GemView>();
+    public static Dictionary<(int,int),Slot> slots = new Dictionary<(int,int), Slot>();
 
     public Vector2Int LevelSize
     {
@@ -40,6 +40,21 @@ public class LevelGenerator : Singleton<LevelGenerator>
 
     public void GenerateLevel()
     {
+        for (int i = 0; i < gemsParent.childCount; i++)
+        {
+            Destroy(gemsParent.GetChild(i).gameObject);
+        }
+        for (int i = 0; i < gridForSlots.childCount; i++)
+        {
+            Destroy(gridForSlots.GetChild(i).gameObject);
+        }
+        
+        slots.Clear();
+
+        GemsPool.ErasePool();
+
+
+        gridForSlots.GetComponent<GridLayoutGroup>().constraintCount = levelSize.x;
         StartCoroutine(GenerationCoroutine());
     }
 
@@ -52,11 +67,13 @@ public class LevelGenerator : Singleton<LevelGenerator>
         
         yield return new WaitForEndOfFrame();
         PopulateEmptySlotsWithGems();
+        PlayerControl.instance.CheckMatches();
     }
 
     private void PopulatePool(Vector2Int levelSize)
     {
-        for (int i = 0; i < levelSize.x*levelSize.y; i++)
+        
+        for (int i = 0; i < levelSize.x*levelSize.y +10; i++)
         {
             var newGem = Instantiate(gemPrefab, gemsParent);
             GemView gemView = newGem.GetComponent<GemView>();
@@ -78,7 +95,7 @@ public class LevelGenerator : Singleton<LevelGenerator>
                 var newSlot = newSlotGO.GetComponent<Slot>();
                 newSlot.coordinates = new Vector2Int(j, i);
                 newSlot.gameObject.name = $"Slot {j}x{i}";
-                slots.Add(new Vector2Int(j,i),newSlot);
+                slots.Add((j,i),newSlot);
             }
         }
     }

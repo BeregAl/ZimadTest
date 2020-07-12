@@ -8,7 +8,9 @@ public class Gem
     public GemView gemView;
     public GemInfo gemInfo;
     
-    public Action<Slot> onSlotChanged;
+    public Action<Slot> onSlotChanged = delegate(Slot slot) {  };
+    
+    public IGemBehaviour gemBehaviour = new BehaviourRegularGem();
 
     public Slot CurrentSlot
     {

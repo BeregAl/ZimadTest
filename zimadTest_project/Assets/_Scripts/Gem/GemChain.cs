@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class GemChain
 {
-    public List<Gem> chainedChems = new List<Gem>();
+    public List<Gem> chainedGems = new List<Gem>();
 
-    public GemChain(List<Gem> _chainedChems)
+    public GemChain(List<Gem> _chainedGems)
     {
-        chainedChems = _chainedChems;
+        chainedGems = _chainedGems;
     }
 }

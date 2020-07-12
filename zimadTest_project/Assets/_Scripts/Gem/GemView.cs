@@ -38,6 +38,10 @@ public class GemView : MonoBehaviour, IPointerClickHandler
     {
         gem.gemInfo = _gemInfo;
         _image.sprite = _gemInfo.sprite;
+        if (_gemInfo.gemType == GemType.Charged)
+        {
+            gem.gemBehaviour = new BehaviourChargedGem();
+        }
     }
 
     public void MoveTo(Vector2 coordinates, bool withAnimation = false)
@@ -49,6 +53,18 @@ public class GemView : MonoBehaviour, IPointerClickHandler
         else
         {
             _rectTransform.position = coordinates;
+        }
+    }
+
+    public void UpdatePosition(bool withAnimation = false)
+    {        
+        if (withAnimation)
+        {
+            _rectTransform.DOMove(gem.currentSlot.rectTransform.position, 0.3f);
+        }
+        else
+        {
+            _rectTransform.position = gem.currentSlot.rectTransform.position;
         }
     }
 
