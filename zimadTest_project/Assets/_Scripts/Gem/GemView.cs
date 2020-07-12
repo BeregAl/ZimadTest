@@ -16,6 +16,7 @@ public class GemView : MonoBehaviour, IPointerClickHandler
 
     private RectTransform _rectTransform;
 
+
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
@@ -33,9 +34,10 @@ public class GemView : MonoBehaviour, IPointerClickHandler
         
     }
 
-    public void InitializeWithGemInfo(GemInfo gemInfo)
+    public void InitializeWithGemInfo(GemInfo _gemInfo)
     {
-        _image.sprite = gemInfo.sprite;
+        gem.gemInfo = _gemInfo;
+        _image.sprite = _gemInfo.sprite;
     }
 
     public void MoveTo(Vector2 coordinates, bool withAnimation = false)

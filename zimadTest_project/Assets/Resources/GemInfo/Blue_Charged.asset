@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   sprite: {fileID: 21300000, guid: e66290d696ef7b44a9505181469802da, type: 3}
-  gemType: 23
+  gemColor: 3
+  gemType: 2

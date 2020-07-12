@@ -7,7 +7,7 @@ public class GemsLibrary : MonoBehaviour
 {
     public static List<GemInfo> gems = new List<GemInfo>();
 
-    public static List<GemInfo> CommonGems => gems.Where(x => x.id >= 1 && x.id <= 3).ToList();
+    public static List<GemInfo> CommonGems => gems.Where(x => x.gemType == GemType.Regular).ToList();
 
     private void Awake()
     {

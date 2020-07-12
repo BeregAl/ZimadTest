@@ -60,11 +60,15 @@ public class PlayerControl : Singleton<PlayerControl>
             var tempCoord = secondSelectedGem.currentSlot.coordinates;
             secondSelectedGem.CurrentSlot = LevelGenerator.slots[firstSelectedGem.currentSlot.coordinates];
             firstSelectedGem.CurrentSlot = LevelGenerator.slots[tempCoord];
+
+            firstSelectedGem.CurrentSlot.gemInSlot = firstSelectedGem;
+            secondSelectedGem.CurrentSlot.gemInSlot = secondSelectedGem;
             
             firstSelectedGem.gemView.MoveTo(firstSelectedGem.currentSlot.rectTransform.position, true);
             secondSelectedGem.gemView.MoveTo(secondSelectedGem.currentSlot.rectTransform.position, true);
             
             SelectedGem = null;
+            CheckMatches();
         }
         else
         {
@@ -88,6 +92,45 @@ public class PlayerControl : Singleton<PlayerControl>
 
     public void CheckMatches()
     {
+        
+        Vector2Int levelSize = LevelGenerator.instance.LevelSize;
+        
+        //Horizontal check
+        for (int y = 0; y < levelSize.y; y++)
+        {
+            for (int x = 0; x < levelSize.x; x++)
+            {
+                if (LevelGenerator.slots.ContainsKey(new Vector2Int(x, y)))
+                {
+                    int originX = x;
+                    GemColor originColor = LevelGenerator.slots[new Vector2Int(x, y)].gemInSlot.gemInfo.gemColor;
+
+                    while (
+                        LevelGenerator.slots.ContainsKey(new Vector2Int(originX, y)) &&
+                        LevelGenerator.slots[new Vector2Int(originX, y)].gemInSlot.gemInfo.gemColor == originColor
+                    )
+                    {
+                        originX++;
+                        
+                    }
+
+                    originX--;
+
+                    if (originX - x >= 2)
+                    {
+                        //Match found
+                        Debug.Log($"Match! x:{x}-{originX} y:{y} color {originColor}");
+                    }
+                    
+                    x = originX;
+
+                }
+                
+            }
+        }
+        
+        
+        
         //LevelGenerator
     }
 }
