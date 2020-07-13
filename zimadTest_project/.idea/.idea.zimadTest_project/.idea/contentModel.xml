@@ -8,9 +8,12 @@
       <e p="Assets" t="Include">
         <e p="_Scripts" t="Include">
           <e p="Gem" t="Include">
+            <e p="BehaviourChargedGem.cs" t="Include" />
+            <e p="BehaviourRegularGem.cs" t="Include" />
             <e p="Gem.cs" t="Include" />
             <e p="GemChain.cs" t="Include" />
             <e p="GemView.cs" t="Include" />
+            <e p="IGemBehaviour.cs" t="Include" />
           </e>
           <e p="GemColor.cs" t="Include" />
           <e p="GemInfo.cs" t="Include" />
@@ -69,6 +72,7 @@
             <e p="EmojiOne Attribution.txt" t="Include" />
           </e>
         </e>
+        <e p="UiController.cs" t="Include" />
       </e>
       <e p="obj" t="ExcludeRecursive" />
       <e p="Packages" t="ExcludeRecursive" />

@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PlayerControl : Singleton<PlayerControl>
 {
@@ -23,21 +25,33 @@ public class PlayerControl : Singleton<PlayerControl>
         }
     }
 
-    public RectTransform gravityImageRectTransform;
+    public GravityDirection GravityDirection
+    {
+        get => gravityDirection;
+        set
+        {
+            gravityDirection = value;
+            onGravityDirectionChange(gravityDirection);
+        }
+    }
+
 
     public bool InputBlocked = false;
     [HideInInspector]
     public GravityDirection gravityDirection;
 
+    public Action<GravityDirection> onGravityDirectionChange;
+
     public static bool gravityChangePending = false;
-
-
     const int CHARGED_GEM_COMBO_COUNT=4;
+    private const float ANIMATION_TIME = 0.3f;
     private Coroutine CheckMatchCoroutineLink;
+    
+    
     // Start is called before the first frame update
     void Start()
     {
-        gravityDirection = GravityDirection.Down;
+        GravityDirection = GravityDirection.Down;
     }
 
     // Update is called once per frame
@@ -55,13 +69,13 @@ public class PlayerControl : Singleton<PlayerControl>
             }
             else
             {
-                TrySwapGems(SelectedGem, gem);
+                StartCoroutine(TrySwapGems(SelectedGem, gem));
             }
         }
 
     }
 
-    private void TrySwapGems(Gem firstSelectedGem, Gem secondSelectedGem)
+    private IEnumerator TrySwapGems(Gem firstSelectedGem, Gem secondSelectedGem)
     {
         //Debug.Log($"Swapping {firstSelectedGem.currentSlot.coordinates} and {secondSelectedGem.currentSlot.coordinates}");
 
@@ -70,21 +84,23 @@ public class PlayerControl : Singleton<PlayerControl>
         {
             SelectedGem = secondSelectedGem;
             EventSystem.current.SetSelectedGameObject(secondSelectedGem.gemView.gameObject);
-            return;
+            yield break;
         }
+        
         
 
         SwapGems(firstSelectedGem,secondSelectedGem);
 
-
         if (IsSwapLeadsToMatch(firstSelectedGem, secondSelectedGem) == false)
         {
             SwapGems(firstSelectedGem,secondSelectedGem);
+            SelectedGem = secondSelectedGem;
         }
         else
         {
             firstSelectedGem.gemView.MoveTo(firstSelectedGem.currentSlot.rectTransform.position, true);
             secondSelectedGem.gemView.MoveTo(secondSelectedGem.currentSlot.rectTransform.position, true);
+            yield return new WaitForSeconds(ANIMATION_TIME);
         
             SelectedGem = null;
             CheckMatches();         
@@ -316,15 +332,13 @@ public class PlayerControl : Singleton<PlayerControl>
 
     private void SwitchGravity()
     {
-        if (gravityDirection == GravityDirection.Down)
+        if (GravityDirection == GravityDirection.Down)
         {
-            gravityDirection = GravityDirection.Up;
-            gravityImageRectTransform.DORotate(Vector3.zero, 0.1f);
+            GravityDirection = GravityDirection.Up;
         }
-        else if (gravityDirection == GravityDirection.Up)
+        else if (GravityDirection == GravityDirection.Up)
         {
-            gravityDirection = GravityDirection.Down;
-            gravityImageRectTransform.DORotate(Vector3.back * 180, 0.1f);
+            GravityDirection = GravityDirection.Down;
         }
     }
 
@@ -333,7 +347,7 @@ public class PlayerControl : Singleton<PlayerControl>
         Vector2Int levelSize = LevelGenerator.instance.LevelSize;
 
 
-        if (gravityDirection == GravityDirection.Down)
+        if (GravityDirection == GravityDirection.Down)
         {
             for (var x = levelSize.x-1; x >= 0; x--)
             {
@@ -390,7 +404,7 @@ public class PlayerControl : Singleton<PlayerControl>
             }            
         }
         
-        else if (gravityDirection == GravityDirection.Up)
+        else if (GravityDirection == GravityDirection.Up)
         {
             for (var x = 0; x < levelSize.x; x++)
             {
